@@ -35,7 +35,7 @@ public class MovementStateManager : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         SwitchState(Idle);
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
