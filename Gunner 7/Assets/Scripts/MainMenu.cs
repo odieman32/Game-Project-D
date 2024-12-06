@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Start Game!");
         //Loads the sceane corresponding by number
         SceneManager.LoadSceneAsync(1);
+        Time.timeScale = 1f;
     }
 }
 

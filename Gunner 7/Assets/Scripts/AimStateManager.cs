@@ -5,7 +5,7 @@ using Cinemachine;
 
 public class AimStateManager : MonoBehaviour
 {
-    AimBaseState currentState;
+    public AimBaseState currentState;
     public HipState Hip = new HipState();
     public AimState Aim = new AimState();
 
@@ -24,9 +24,20 @@ public class AimStateManager : MonoBehaviour
     [HideInInspector] public Vector3 actualAimPos;
     [SerializeField] float aimSmoothSpeed;
     [SerializeField] LayerMask aimMask;
+
+    float xFollowPos;
+    float yFollowPos, ogYPos;
+    [SerializeField] float crouchCamHeight;
+    [SerializeField] float shoulderSwapSpeed = 10;
+    MovementStateManager moving;
+
     // Start is called before the first frame update
     void Start()
     {
+        moving = GetComponent<MovementStateManager>();
+        xFollowPos = camFollowPos.localPosition.x;
+        ogYPos = camFollowPos.localPosition.y;
+        yFollowPos = ogYPos;
         vCam = GetComponentInChildren<CinemachineVirtualCamera>();
         hipFov = vCam.m_Lens.FieldOfView;
         anim = GetComponent<Animator>();
@@ -52,8 +63,12 @@ public class AimStateManager : MonoBehaviour
             aimPos.position = Vector3.Lerp(aimPos.position, hit.point, aimSmoothSpeed * Time.deltaTime);
             actualAimPos = hit.point;
         }
-      
+
+        MoveCamera();
+
         currentState.UpdateState(this);
+
+        
     }
 
     private void LateUpdate()
@@ -66,6 +81,16 @@ public class AimStateManager : MonoBehaviour
     {
         currentState = state;
         currentState.EnterState(this);
+    }
+
+    void MoveCamera()
+    {
+        if (Input.GetKeyDown(KeyCode.Q)) xFollowPos = -xFollowPos;
+        if (moving.currentState == moving.Crouch) yFollowPos = crouchCamHeight;
+        else yFollowPos = ogYPos;
+
+        Vector3 newFollowPos = new Vector3(xFollowPos, yFollowPos, camFollowPos.localPosition.z);
+        camFollowPos.localPosition = Vector3.Lerp(camFollowPos.localPosition, newFollowPos, shoulderSwapSpeed * Time.deltaTime);
     }
 }
 
