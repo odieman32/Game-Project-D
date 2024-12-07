@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 public class YouWin : MonoBehaviour
 {
-    public GameObject winUI; //game object to use Win UI
+    [SerializeField] GameObject winUI; //game object to use Win UI
+    [SerializeField] GameObject mainUI;
     private void OnTriggerEnter(Collider collision)
     {
         if(collision.tag == "Player") //if box collider touches player then the following will happen
         {
             winUI.SetActive(true); //win ui is set to true
+            mainUI.SetActive(false);
             Time.timeScale = 0; //time will stop
             Cursor.lockState = CursorLockMode.None; //cursor is unlocked
             Cursor.visible = true; //cursor is visable
